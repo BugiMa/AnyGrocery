@@ -1,5 +1,6 @@
 package com.example.anygrocery
 
+import android.graphics.Color
 import android.os.Bundle
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -8,8 +9,11 @@ import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.content.ContextCompat
+import androidx.viewpager2.widget.ViewPager2
 import com.example.anygrocery.ui.main.SectionsPagerAdapter
 import com.example.anygrocery.databinding.ActivityMainBinding
+import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,16 +25,18 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
-        val viewPager: ViewPager = binding.viewPager
-        viewPager.adapter = sectionsPagerAdapter
-        val tabs: TabLayout = binding.tabs
-        tabs.setupWithViewPager(viewPager)
-        val fab: FloatingActionButton = binding.fab
+        val sectionsPagerAdapter = SectionsPagerAdapter(this)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
+        val viewPager: ViewPager2 = binding.viewPager
+        viewPager.adapter = sectionsPagerAdapter
+
+        val tabs: TabLayout = binding.tabs
+
+        TabLayoutMediator(
+            tabs, viewPager
+        ) { tab: TabLayout.Tab, position: Int -> tab.text = "OBJECT " + (position + 1) }.attach()
+
+
+
     }
 }
