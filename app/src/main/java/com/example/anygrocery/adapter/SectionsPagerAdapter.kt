@@ -1,8 +1,9 @@
-package com.example.anygrocery.ui.main
+package com.example.anygrocery.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.anygrocery.view.ShoppingListCollectionFragment
 
 class SectionsPagerAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {
@@ -14,6 +15,8 @@ class SectionsPagerAdapter(fragmentActivity: FragmentActivity) :
         }
         return ShoppingListCollectionFragment()
     }
+
+
 
     override fun getItemCount(): Int {
         return 2 //TODO: Constant : PAGE_COUNT

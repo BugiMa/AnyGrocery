@@ -26,8 +26,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            app:tabIndicatorColor="@color/white"
-            app:tabSelectedTextColor="@color/white" />
+            app:tabIndicatorColor="?attr/colorOnPrimary"
+            app:tabSelectedTextColor="?attr/colorOnPrimary"
+            app:tabTextColor="?attr/colorPrimaryVariant"
+            app:tabIconTint="@color/color_selector_tab_icon"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager2.widget.ViewPager2
@@ -37,12 +39,4 @@
         android:layout_weight="1"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email"
-        android:contentDescription="@string/add" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

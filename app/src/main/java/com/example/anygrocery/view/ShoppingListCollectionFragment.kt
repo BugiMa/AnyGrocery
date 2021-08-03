@@ -1,46 +1,45 @@
-package com.example.anygrocery.ui.main
+package com.example.anygrocery.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.anygrocery.databinding.FragmentMainBinding
+import androidx.recyclerview.widget.RecyclerView
+import com.example.anygrocery.databinding.FragmentRecycelerViewFabBinding
+import com.example.anygrocery.model.ShoppingListModel
+import com.example.anygrocery.viewModel.ShoppingListCollectionViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-/**
- * A placeholder fragment containing a simple view.
- */
 class ShoppingListCollectionFragment : Fragment() {
 
     private lateinit var shoppingListCollectionViewModel: ShoppingListCollectionViewModel
-    private var _binding: FragmentMainBinding? = null
+    private var _binding: FragmentRecycelerViewFabBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        shoppingListCollectionViewModel = ViewModelProvider(this).get(ShoppingListCollectionViewModel::class.java).apply {
-            setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
+        shoppingListCollectionViewModel = ViewModelProvider(this).get(
+            ShoppingListCollectionViewModel::class.java).apply {
+            //setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
         }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-
-        _binding = FragmentMainBinding.inflate(inflater, container, false)
+    ): View {
+        _binding = FragmentRecycelerViewFabBinding.inflate(inflater, container, false)
         val root = binding.root
+        val recyclerView: RecyclerView = binding.recyclerView
 
-        val textView: TextView = binding.sectionLabel
-        shoppingListCollectionViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
+        val fab: FloatingActionButton = binding.fab
+       // shoppingListCollectionViewModel.text.observe(viewLifecycleOwner, Observer {
+       //     textView.text = it
+       // })
         return root
     }
 
@@ -56,10 +55,10 @@ class ShoppingListCollectionFragment : Fragment() {
          * number.
          */
         @JvmStatic
-        fun newInstance(sectionNumber: Int): ShoppingListCollectionFragment {
+        fun newInstance(shoppingListCollection: ArrayList<ShoppingListModel>): ShoppingListCollectionFragment {
             return ShoppingListCollectionFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(ARG_SECTION_NUMBER, sectionNumber)
+                    putParcelableArrayList("ShoppingListCollection",shoppingListCollection)
                 }
             }
         }
