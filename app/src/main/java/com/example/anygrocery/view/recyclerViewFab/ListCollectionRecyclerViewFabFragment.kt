@@ -38,6 +38,7 @@ class ListCollectionRecyclerViewFabFragment : Fragment() {
         arguments?.getBoolean(ARG_IS_ARCHIVED_VIEW)?.let{
             isArchivedListsView = it
         }
+        viewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -47,11 +48,9 @@ class ListCollectionRecyclerViewFabFragment : Fragment() {
         _binding = FragmentRecyclerViewFabBinding.inflate(inflater, container, false)
         val root = binding.root
 
-
-        // ------------------------ RecyclerView ------------------------
         val adapter = ListCollectionAdapter(
             itemClickCallback = {
-                if(!isArchivedListsView) (navigateToFragment(ShoppingListFragment()))
+                navigateToFragment(ShoppingListFragment.newInstance(it))
             },
             itemLongClickCallback = {
                 if (!isArchivedListsView) deleteListDialog(it)
@@ -66,16 +65,13 @@ class ListCollectionRecyclerViewFabFragment : Fragment() {
             this.layoutManager = LinearLayoutManager(requireContext())
         }
 
-        // ------------------------ ViewModel ------------------------
-        viewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
         if (!isArchivedListsView) {
-            viewModel.getActiveLists().observe(viewLifecycleOwner, { adapter.setData(it) })
+            viewModel.getActiveListsLiveData().observe(viewLifecycleOwner, { adapter.setData(it) })
         } else {
-            viewModel.getArchivedLists().observe(viewLifecycleOwner, { adapter.setData(it) })
+            viewModel.getArchivedListsLiveData().observe(viewLifecycleOwner, { adapter.setData(it) })
         }
 
 
-        // ------------------------ FAB ------------------------
         val fab: FloatingActionButton = binding.fab
         if (isArchivedListsView) {
             fab.visibility = View.GONE
@@ -121,8 +117,10 @@ class ListCollectionRecyclerViewFabFragment : Fragment() {
 
     private fun insertNewListToDatabase(listName: String): Boolean {
         return if (listName.isNotEmpty()) {
-            val newList = ShoppingList(listName)
-            viewModel.insert(newList)
+            val newList = ShoppingList(id, listName)
+
+            viewModel.addList(newList)
+
             Toast.makeText(requireContext(), "List created successfully.", Toast.LENGTH_LONG).show()
             false
         } else {
@@ -136,7 +134,9 @@ class ListCollectionRecyclerViewFabFragment : Fragment() {
         val builder = AlertDialog.Builder(context)
             builder.setTitle("Do You really want to delete this list?")
             builder.setPositiveButton("Yes") { dialog, _ ->
-                viewModel.delete(list)
+
+                viewModel.deleteList(list)
+
                 Toast.makeText(requireContext(), "List deleted.", Toast.LENGTH_LONG).show()
                 dialog.dismiss() }
             builder.setNegativeButton("No") { dialog, _ -> dialog.cancel() }
@@ -148,8 +148,13 @@ class ListCollectionRecyclerViewFabFragment : Fragment() {
         val builder = AlertDialog.Builder(context)
             builder.setTitle("Do You really want to archive this list?")
             builder.setPositiveButton("Yes") { dialog, _ ->
+
+                    viewModel.deleteList(list)
                     list.isArchived = true
-                    viewModel.update(list)
+
+                    viewModel.archiveList(list)
+
+
                     Toast.makeText(requireContext(), "List Archived.", Toast.LENGTH_LONG).show()
                     dialog.dismiss() }
             builder.setNegativeButton("No") { dialog, _ -> dialog.cancel() }
@@ -160,7 +165,7 @@ class ListCollectionRecyclerViewFabFragment : Fragment() {
         requireActivity().supportFragmentManager
             .beginTransaction()
             .replace(R.id.container, fragment)
-            .disallowAddToBackStack()
+            .addToBackStack("ShoppingListFragment")
             .commit()
     }
 }

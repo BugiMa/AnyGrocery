@@ -20,11 +20,10 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/recycler_view_fab_fragment_view"
-        android:name="com.example.anygrocery.view.recyclerViewFab.ShoppingListRecyclerViewFabFragment"
+    <FrameLayout
+        android:id="@+id/products_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
 
 </LinearLayout>

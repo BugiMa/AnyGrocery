@@ -3,58 +3,58 @@ package com.example.anygrocery.viewModel
 import android.app.Application
 import androidx.lifecycle.*
 import com.example.anygrocery.database.AnyGroceryDatabase
-import com.example.anygrocery.database.repository.ListRepository
-import com.example.anygrocery.database.repository.ProductRepository
+import com.example.anygrocery.database.repository.ShoppingListRepository
+import com.example.anygrocery.model.ListsWithProducts
 import com.example.anygrocery.model.Product
 import com.example.anygrocery.model.ShoppingList
 import kotlinx.coroutines.launch
 
 class SharedViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository: ListRepository
-    //private val repository: ProductRepository
+    private val repository: ShoppingListRepository
 
-    //private val allProducts: LiveData<List<Product>>
-    //private val allChecked: LiveData<List<Product>>
-    //private val productCount: Int?
-    //private val checkedCount: Int?
-    private val activeLists:   LiveData<List<ShoppingList>>
-    private val archivedLists: LiveData<List<ShoppingList>>
+    private val activeListsLiveData:   LiveData<List<ShoppingList>>
+    private val archivedListsLiveData: LiveData<List<ShoppingList>>
+    private var listsWithProducts: LiveData<List<ListsWithProducts>>
 
     init {
-        val listDao = AnyGroceryDatabase.getInstance(application).listDao()
-        repository = ListRepository(listDao)
-        activeLists = repository.allActive
-        archivedLists = repository.allArchived
+        val dao = AnyGroceryDatabase.getInstance(application).shoppingListDao()
+        repository = ShoppingListRepository(dao)
+        
+        activeListsLiveData = repository.allActive
+        archivedListsLiveData = repository.allArchived
+        listsWithProducts = repository.listsWithProducts
+
     }
 
-    fun insert(shoppingList: ShoppingList) = viewModelScope.launch {
-        repository.insert(shoppingList)
+    fun getActiveListsLiveData(): LiveData<List<ShoppingList>> {
+        return activeListsLiveData
+    }
+    fun getArchivedListsLiveData(): LiveData<List<ShoppingList>> {
+        return activeListsLiveData
+    }
+    fun getListsWithProducts(): LiveData<List<ListsWithProducts>> {
+        return listsWithProducts
     }
 
-    fun update(shoppingList: ShoppingList) = viewModelScope.launch {
-        repository.update(shoppingList)
+    fun addList(list: ShoppingList) = viewModelScope.launch {
+        repository.insertList(list)
+    }
+    fun deleteList(list: ShoppingList) = viewModelScope.launch {
+        repository.deleteList(list)
+    }
+    fun archiveList(list: ShoppingList) = viewModelScope.launch {
+        repository.updateList(list.apply{ isArchived = true})
     }
 
-    fun delete(shoppingList: ShoppingList) = viewModelScope.launch {
-        repository.delete(shoppingList)
+    fun addProduct(product: Product) = viewModelScope.launch {
+        repository.insertProduct(product)
     }
-
-    fun deleteAll() = viewModelScope.launch {
-        repository.deleteAll()
+    fun deleteProduct(product: Product) = viewModelScope.launch {
+        repository.deleteProduct(product)
     }
-    fun nuke() = viewModelScope.launch {
-        repository.nuke()
+    fun checkProduct(product: Product) = viewModelScope.launch {
+        val check = product.apply { isChecked = !isChecked!! }
+        repository.updateProduct(check)
     }
-
-    // getters & setters
-
-    fun getActiveLists(): LiveData<List<ShoppingList>> {
-        return activeLists
-    }
-    fun getArchivedLists(): LiveData<List<ShoppingList>> {
-        return archivedLists
-    }
-
-
 }

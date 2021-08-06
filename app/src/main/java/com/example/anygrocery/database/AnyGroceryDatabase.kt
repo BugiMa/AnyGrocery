@@ -5,8 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.anygrocery.database.dao.ProductDao
-import com.example.anygrocery.database.dao.ListDao
+import com.example.anygrocery.database.dao.ShoppingListDao
 import com.example.anygrocery.model.Product
 import com.example.anygrocery.model.ShoppingList
 import com.example.anygrocery.util.AnyGroceryTypeConverters
@@ -15,11 +14,10 @@ import com.example.anygrocery.util.AnyGroceryTypeConverters
 @TypeConverters(AnyGroceryTypeConverters::class)
 abstract class AnyGroceryDatabase : RoomDatabase() {
 
-    //abstract val listDao: ListDao
+    //abstract val listDao: ShoppingListDao
     //abstract val productDao: ProductDao
 
-    abstract fun listDao(): ListDao
-    abstract fun productDao(): ProductDao
+    abstract fun shoppingListDao(): ShoppingListDao
 
     companion object {
 

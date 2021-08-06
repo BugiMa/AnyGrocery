@@ -3,7 +3,6 @@ package com.example.anygrocery.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.persistableBundleOf
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anygrocery.databinding.ItemListCollectionBinding
 import com.example.anygrocery.model.ShoppingList
@@ -24,7 +23,7 @@ class ListCollectionAdapter(
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         val current = listCollection[position]
         val groceriesDone = "${current.allCount}/${current.checkedCount}"
-        holder.bind(current.listName, groceriesDone)
+        holder.bind(current.name, groceriesDone)
     }
 
     inner class ListViewHolder(private val itemBinding: ItemListCollectionBinding) : RecyclerView.ViewHolder(itemBinding.root) {

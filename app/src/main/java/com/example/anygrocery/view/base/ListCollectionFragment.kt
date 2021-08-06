@@ -2,12 +2,13 @@ package com.example.anygrocery.view.base
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.example.anygrocery.MainActivity
 import com.example.anygrocery.R
 import com.example.anygrocery.adapter.SectionsPagerAdapter
 import com.example.anygrocery.databinding.FragmentListCollectionBinding
@@ -15,7 +16,7 @@ import com.example.anygrocery.util.SpinnerTransformer
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
-class ListCollectionFragment : Fragment() {
+class ListCollectionFragment : Fragment(), MainActivity.IOnBackPressed {
 
     private lateinit var viewPager: ViewPager2
 
@@ -27,7 +28,7 @@ class ListCollectionFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentListCollectionBinding.inflate(inflater, container, false)
 
         val sectionsPagerAdapter = SectionsPagerAdapter(requireActivity())
@@ -57,4 +58,15 @@ class ListCollectionFragment : Fragment() {
 
         return binding.root
     }
+
+    override fun onBackPressed(): Boolean {
+        return if (viewPager.currentItem == 1) {
+            viewPager.currentItem = 0
+            true
+        } else {
+
+            false
+        }
+    }
+
 }

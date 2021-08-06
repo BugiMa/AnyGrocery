@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anygrocery.databinding.ItemShoppingListBinding
+import com.example.anygrocery.model.ListsWithProducts
 import com.example.anygrocery.model.Product
 
 class ShoppingListAdapter(
@@ -22,7 +23,7 @@ class ShoppingListAdapter(
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val current = products[position]
-        holder.bind(current.productName,
+        holder.bind(current.name,
                     current.amount,
                     current.isChecked
         )
@@ -50,8 +51,8 @@ class ShoppingListAdapter(
         return products.size
     }
 
-    fun setData(newData: List<Product>) {
-        this.products = newData
+    fun setData(newData: List<ListsWithProducts>, selectedListId: Int) {
+        this.products = newData[selectedListId - 1].products
         notifyDataSetChanged()
     }
 }

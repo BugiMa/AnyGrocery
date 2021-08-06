@@ -1,16 +1,24 @@
 package com.example.anygrocery.model
 
 import androidx.annotation.NonNull
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
+import androidx.room.ForeignKey.CASCADE
 
-@Entity (tableName = "product_table")
+@Entity (foreignKeys = [
+    ForeignKey(
+        entity = ShoppingList::class,
+        parentColumns = ["id"],
+        childColumns = ["listId"],
+        onDelete = CASCADE
+        )
+    ])
 data class Product(
-    @PrimaryKey (autoGenerate = false)
-    @NonNull
+    //@PrimaryKey (autoGenerate = true)
     //val id: Int,
-    val productName: String,
+    //@ColumnInfo (index = true)
+    @PrimaryKey
+    val name: String,
+    val listId : Int,
     var amount: Int,
     var isChecked: Boolean? = false,
 )
