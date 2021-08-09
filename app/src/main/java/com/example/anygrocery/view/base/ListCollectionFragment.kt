@@ -23,8 +23,6 @@ class ListCollectionFragment : Fragment(), MainActivity.IOnBackPressed {
     private var _binding: FragmentListCollectionBinding? = null
     private val binding get() = _binding!!
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -67,5 +65,4 @@ class ListCollectionFragment : Fragment(), MainActivity.IOnBackPressed {
             false
         }
     }
-
 }

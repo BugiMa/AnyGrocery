@@ -52,12 +52,8 @@ class ShoppingListFragment : Fragment() {
         toolbar.setNavigationOnClickListener {
             requireActivity().onBackPressed()
         }
-
-
-
         return binding.root
     }
-
 
     companion object {
 

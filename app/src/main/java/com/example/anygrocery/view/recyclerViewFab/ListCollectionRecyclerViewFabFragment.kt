@@ -22,7 +22,6 @@ import com.example.anygrocery.view.base.ShoppingListFragment
 import com.example.anygrocery.viewModel.SharedViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-
 private const val ARG_IS_ARCHIVED_VIEW = "is_archived_lists_view"
 
 class ListCollectionRecyclerViewFabFragment : Fragment() {
@@ -47,8 +46,6 @@ class ListCollectionRecyclerViewFabFragment : Fragment() {
     ): View {
         _binding = FragmentRecyclerViewFabBinding.inflate(inflater, container, false)
         val root = binding.root
-
-
 
         val adapter = ListCollectionAdapter(
             itemClickCallback = {
@@ -87,7 +84,6 @@ class ListCollectionRecyclerViewFabFragment : Fragment() {
     }
 
     companion object {
-
         @JvmStatic
         fun newInstance(isArchivedListsView: Boolean): ListCollectionRecyclerViewFabFragment {
             return ListCollectionRecyclerViewFabFragment().apply {

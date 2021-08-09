@@ -77,12 +77,10 @@ class ShoppingListRecyclerViewFabFragment : Fragment() {
         fab.setOnClickListener {
             addProductDialog()
         }
-
         return root
     }
 
     companion object {
-
         @JvmStatic
         fun newInstance(shoppingList: ShoppingList): ShoppingListRecyclerViewFabFragment {
             return ShoppingListRecyclerViewFabFragment().apply {
@@ -132,7 +130,6 @@ class ShoppingListRecyclerViewFabFragment : Fragment() {
         nameInput.addTextChangedListener {
             builder.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = nameInput.text.toString().isNotEmpty()
         }
-
     }
 
     private fun insertNewProductToDatabase(productName: String, productAmount: String) {

@@ -2,9 +2,7 @@ package com.example.anygrocery.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.annotation.NonNull
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.example.anygrocery.util.AnyGroceryTypeConverters
@@ -52,6 +50,3 @@ data class ShoppingList(
         }
     }
 }
-
-
-
