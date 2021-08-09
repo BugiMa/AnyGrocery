@@ -24,14 +24,13 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
         activeListsLiveData = repository.allActive
         archivedListsLiveData = repository.allArchived
         listsWithProducts = repository.listsWithProducts
-
     }
 
     fun getActiveListsLiveData(): LiveData<List<ShoppingList>> {
         return activeListsLiveData
     }
     fun getArchivedListsLiveData(): LiveData<List<ShoppingList>> {
-        return activeListsLiveData
+        return archivedListsLiveData
     }
     fun getListsWithProducts(): LiveData<List<ListsWithProducts>> {
         return listsWithProducts
@@ -47,14 +46,21 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
         repository.updateList(list.apply{ isArchived = true})
     }
 
-    fun addProduct(product: Product) = viewModelScope.launch {
+    fun addProduct(product: Product, list: ShoppingList) = viewModelScope.launch {
         repository.insertProduct(product)
+        repository.updateList(list.apply {
+            allCount = allCount!! + 1 })
     }
-    fun deleteProduct(product: Product) = viewModelScope.launch {
+    fun deleteProduct(product: Product, list: ShoppingList) = viewModelScope.launch {
         repository.deleteProduct(product)
+        repository.updateList(list.apply {
+            allCount = allCount!! - 1
+            checkedCount = if (product.isChecked!!) checkedCount!! - 1 else checkedCount})
     }
-    fun checkProduct(product: Product) = viewModelScope.launch {
+    fun checkProduct(product: Product, list: ShoppingList) = viewModelScope.launch {
         val check = product.apply { isChecked = !isChecked!! }
         repository.updateProduct(check)
+        repository.updateList(list.apply {
+            checkedCount = checkedCount!! + if (check.isChecked!!) 1 else -1 })
     }
 }

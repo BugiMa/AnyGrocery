@@ -2,6 +2,8 @@ package com.example.anygrocery.view.recyclerViewFab
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.InputFilter
 import android.text.InputType
 import android.view.LayoutInflater
@@ -10,8 +12,8 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +23,7 @@ import com.example.anygrocery.model.Product
 import com.example.anygrocery.model.ShoppingList
 import com.example.anygrocery.viewModel.SharedViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+
 
 private const val ARG_PRODUCT_LIST = "shopping_list"
 
@@ -48,13 +51,12 @@ class ShoppingListRecyclerViewFabFragment : Fragment() {
         _binding = FragmentRecyclerViewFabBinding.inflate(inflater, container, false)
         val root = binding.root
 
-
         val adapter = ShoppingListAdapter(
             itemClickCallback = {
-                viewModel.checkProduct(it)
+                if (!shoppingList.isArchived!!) viewModel.checkProduct(it, shoppingList)
             },
             itemLongClickCallback = {
-                deleteProductDialog(it)
+                if (!shoppingList.isArchived!!) deleteProductDialog(it)
             }
         )
         val recyclerView: RecyclerView = binding.recyclerView
@@ -63,16 +65,16 @@ class ShoppingListRecyclerViewFabFragment : Fragment() {
             this.layoutManager = LinearLayoutManager(requireContext())
         }
 
-
         viewModel.getListsWithProducts().observe(viewLifecycleOwner, {
-            adapter.setData(it, shoppingList.id)
+            val products = it.find { item -> item.shoppingList.id == shoppingList.id }?.products
+            adapter.setData(products)
         })
 
         val fab: FloatingActionButton = binding.fab
         if (shoppingList.isArchived!!) {
             fab.visibility = View.GONE
         }
-        fab.setOnClickListener() {
+        fab.setOnClickListener {
             addProductDialog()
         }
 
@@ -117,43 +119,44 @@ class ShoppingListRecyclerViewFabFragment : Fragment() {
         linearLayout.addView(nameInput)
         linearLayout.addView(amountInput)
 
-        val amount = if (amountInput.text.isNotEmpty()) amountInput.text.toString() else "1"
-
         val builder = AlertDialog.Builder(context)
-        builder.setTitle("Add New Product")
-        builder.setView(linearLayout)
-        builder.setPositiveButton("Add") { dialog, _ -> if (insertNewProductToDatabase(nameInput.text.toString(), amount)) dialog.dismiss() }
-        builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
-        builder.show()
+            .setTitle("Add New Product")
+            .setView(linearLayout)
+            .setPositiveButton("Add") { _, _ ->
+                insertNewProductToDatabase(nameInput.text.toString(), amountOneIfEmpty(amountInput.text.toString()))
+            }
+            .setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+            .show()
+
+        builder.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+        nameInput.addTextChangedListener {
+            builder.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = nameInput.text.toString().isNotEmpty()
+        }
+
     }
 
-    private fun insertNewProductToDatabase(productName: String, productAmount: String): Boolean {
-        return if (productName.isNotEmpty()) {
+    private fun insertNewProductToDatabase(productName: String, productAmount: String) {
+        if (productName.isNotEmpty()) {
             val newProduct = Product(  productName, shoppingList.id,productAmount.toInt())
-
-            viewModel.addProduct(newProduct, shoppingList.id)
-            //viewModel.addOrUpdateProduct(newProduct, shoppingList.id)
-
+            viewModel.addProduct(newProduct, shoppingList)
             Toast.makeText(requireContext(), "Product added successfully.", Toast.LENGTH_LONG).show()
-            false
-        } else {
-            Toast.makeText(requireContext(), "Name field must be filled.", Toast.LENGTH_LONG).show()
-            true
         }
+    }
+
+    private fun amountOneIfEmpty (amount: String): String {
+        return if (amount.isNotEmpty())
+            amount else "1"
     }
 
     private fun deleteProductDialog(product: Product) {
 
-        val builder = AlertDialog.Builder(context)
-        builder.setTitle("Do You really want to delete this product?")
-        builder.setPositiveButton("Yes") { dialog, _ ->
-
-            viewModel.deleteProduct(product)
-            //viewModel.deleteProduct(product, shoppingList.id)
-
-            Toast.makeText(requireContext(), "Product deleted.", Toast.LENGTH_LONG).show()
-            dialog.dismiss() }
-        builder.setNegativeButton("No") { dialog, _ -> dialog.cancel()}
-        builder.show()
+        AlertDialog.Builder(context)
+            .setTitle("Do You really want to delete this product?")
+            .setPositiveButton("Yes") { _, _ ->
+                viewModel.deleteProduct(product, shoppingList)
+                Toast.makeText(requireContext(), "Product deleted.", Toast.LENGTH_LONG).show()
+            }
+            .setNegativeButton("No") { dialog, _ -> dialog.cancel()}
+            .show()
     }
 }

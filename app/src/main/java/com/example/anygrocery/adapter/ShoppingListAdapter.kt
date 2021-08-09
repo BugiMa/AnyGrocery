@@ -1,10 +1,10 @@
 package com.example.anygrocery.adapter
 
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anygrocery.databinding.ItemShoppingListBinding
-import com.example.anygrocery.model.ListsWithProducts
 import com.example.anygrocery.model.Product
 
 class ShoppingListAdapter(
@@ -41,9 +41,18 @@ class ShoppingListAdapter(
             }
         }
         fun bind(name: String, amount: Int, isChecked: Boolean?) {
+
+            if (isChecked!!) {
+                itemBinding.productName.paintFlags = (itemBinding.productName.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG)
+                itemBinding.productAmount.paintFlags = (itemBinding.productName.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG)
+            } else {
+                itemBinding.productName.paintFlags = (itemBinding.productName.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv())
+                itemBinding.productAmount.paintFlags = (itemBinding.productName.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv())
+            }
+
             itemBinding.productName.text = name
             itemBinding.productAmount.text = amount.toString()
-            itemBinding.checkBox.isChecked = isChecked!!
+            itemBinding.checkBox.isChecked = isChecked
         }
     }
 
@@ -51,8 +60,10 @@ class ShoppingListAdapter(
         return products.size
     }
 
-    fun setData(newData: List<ListsWithProducts>, selectedListId: Int) {
-        this.products = newData[selectedListId - 1].products
+    fun setData(newData: List<Product>?) {
+        if (newData != null) {
+            this.products = newData
+        }
         notifyDataSetChanged()
     }
 }

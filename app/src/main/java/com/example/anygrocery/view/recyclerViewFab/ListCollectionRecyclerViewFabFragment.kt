@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,7 +39,6 @@ class ListCollectionRecyclerViewFabFragment : Fragment() {
         arguments?.getBoolean(ARG_IS_ARCHIVED_VIEW)?.let{
             isArchivedListsView = it
         }
-        viewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -47,6 +47,8 @@ class ListCollectionRecyclerViewFabFragment : Fragment() {
     ): View {
         _binding = FragmentRecyclerViewFabBinding.inflate(inflater, container, false)
         val root = binding.root
+
+
 
         val adapter = ListCollectionAdapter(
             itemClickCallback = {
@@ -65,12 +67,13 @@ class ListCollectionRecyclerViewFabFragment : Fragment() {
             this.layoutManager = LinearLayoutManager(requireContext())
         }
 
+        viewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+
         if (!isArchivedListsView) {
             viewModel.getActiveListsLiveData().observe(viewLifecycleOwner, { adapter.setData(it) })
         } else {
             viewModel.getArchivedListsLiveData().observe(viewLifecycleOwner, { adapter.setData(it) })
         }
-
 
         val fab: FloatingActionButton = binding.fab
         if (isArchivedListsView) {
@@ -107,25 +110,26 @@ class ListCollectionRecyclerViewFabFragment : Fragment() {
             hint = ("New List")
             filters += InputFilter.LengthFilter(24)
         }
-        AlertDialog.Builder(context)
+        val builder = AlertDialog.Builder(context)
             .setTitle("Add New Shopping List")
             .setView(nameInput)
-            .setPositiveButton("Add") { dialog, _ -> if (insertNewListToDatabase(nameInput.text.toString())) dialog.dismiss() }
+            .setPositiveButton("Add") { _, _ -> insertNewListToDatabase(nameInput.text.toString())}
             .setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
             .show()
+
+        builder.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+        nameInput.addTextChangedListener {
+            builder.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = nameInput.text.toString().isNotEmpty()
+        }
     }
 
-    private fun insertNewListToDatabase(listName: String): Boolean {
-        return if (listName.isNotEmpty()) {
+    private fun insertNewListToDatabase(listName: String) {
+        if (listName.isNotEmpty()) {
             val newList = ShoppingList(id, listName)
 
             viewModel.addList(newList)
 
             Toast.makeText(requireContext(), "List created successfully.", Toast.LENGTH_LONG).show()
-            false
-        } else {
-            Toast.makeText(requireContext(), "Name field must be filled.", Toast.LENGTH_LONG).show()
-            true
         }
     }
 
@@ -149,11 +153,7 @@ class ListCollectionRecyclerViewFabFragment : Fragment() {
             builder.setTitle("Do You really want to archive this list?")
             builder.setPositiveButton("Yes") { dialog, _ ->
 
-                    viewModel.deleteList(list)
-                    list.isArchived = true
-
                     viewModel.archiveList(list)
-
 
                     Toast.makeText(requireContext(), "List Archived.", Toast.LENGTH_LONG).show()
                     dialog.dismiss() }

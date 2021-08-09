@@ -32,6 +32,8 @@ class ShoppingListRepository (private val shoppingListDao: ShoppingListDao) {
         shoppingListDao.delete(product)
     }
 
+
+
     //fun listsWithProducts(): LiveData<List<ListsWithProducts>> {
     //    return shoppingListDao.listsWithProducts()
     //}

@@ -60,11 +60,10 @@ class ListCollectionFragment : Fragment(), MainActivity.IOnBackPressed {
     }
 
     override fun onBackPressed(): Boolean {
-        return if (viewPager.currentItem == 1) {
+        return if (viewPager.currentItem == 1 ) {
             viewPager.currentItem = 0
             true
         } else {
-
             false
         }
     }

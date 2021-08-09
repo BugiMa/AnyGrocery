@@ -47,8 +47,8 @@ class ShoppingListFragment : Fragment() {
             .replace(R.id.products_container, newShoppingListFragment)
             .commit()
 
-        //binding.toolbar.title = SharedViewModel.getCurrentListName()
         val toolbar: MaterialToolbar = binding.toolbar
+        toolbar.title = shoppingList.name
         toolbar.setNavigationOnClickListener {
             requireActivity().onBackPressed()
         }

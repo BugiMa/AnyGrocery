@@ -16,8 +16,8 @@ data class ShoppingList(
     @PrimaryKey (autoGenerate = true)
     val id: Int,
     val name: String,
-    val allCount: Int? = 0,
-    val checkedCount: Int? = 0,
+    var allCount: Int? = 0,
+    var checkedCount: Int? = 0,
     var creationDate: OffsetDateTime? = OffsetDateTime.now(),
     var isArchived: Boolean? = false,
 ) : Parcelable {

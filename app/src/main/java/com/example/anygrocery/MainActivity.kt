@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         val fragment: ListCollectionFragment? = supportFragmentManager.findFragmentByTag(TAG_LIST_COLLECTION_FRAGMENT) as ListCollectionFragment?
         (fragment as? IOnBackPressed)?.onBackPressed()?.not()?.let {
             if (it) super.onBackPressed()
+            else supportFragmentManager.popBackStack()
         }
     }
 

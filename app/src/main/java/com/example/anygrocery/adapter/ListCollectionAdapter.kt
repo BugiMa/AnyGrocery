@@ -21,9 +21,10 @@ class ListCollectionAdapter(
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        val current = listCollection[position]
-        val groceriesDone = "${current.allCount}/${current.checkedCount}"
-        holder.bind(current.name, groceriesDone)
+        val list = listCollection[position]
+        val groceriesDone = "${list.checkedCount}/${list.allCount}"
+
+        holder.bind(list.name, groceriesDone, list.isArchived!!)
     }
 
     inner class ListViewHolder(private val itemBinding: ItemListCollectionBinding) : RecyclerView.ViewHolder(itemBinding.root) {
@@ -41,9 +42,10 @@ class ListCollectionAdapter(
                 archiveButtonClickCallback?.invoke(listCollection[adapterPosition])
             }
         }
-        fun bind(name: String, groceriesDone: String) {
+        fun bind(name: String, groceriesDone: String, isArchived: Boolean) {
+            if (isArchived)itemBinding.archiveImageButton.visibility = View.GONE
             itemBinding.listName.text = name
-            itemBinding.groceriesDoneNumber.text = groceriesDone
+            itemBinding.groceriesDone.text = groceriesDone
             itemBinding.archiveImageButton.visibility = if (listCollection[adapterPosition].isArchived!!) View.GONE else View.VISIBLE
         }
     }
