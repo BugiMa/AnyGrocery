@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anygrocery.R
@@ -62,6 +63,7 @@ class ListCollectionRecyclerViewFabFragment : Fragment() {
         recyclerView.apply {
             this.adapter = adapter
             this.layoutManager = LinearLayoutManager(requireContext())
+            this.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
         }
 
         viewModel = ViewModelProvider(this).get(SharedViewModel::class.java)

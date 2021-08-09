@@ -2,8 +2,6 @@ package com.example.anygrocery.view.recyclerViewFab
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.InputFilter
 import android.text.InputType
 import android.view.LayoutInflater
@@ -15,6 +13,7 @@ import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anygrocery.adapter.ShoppingListAdapter
@@ -59,10 +58,12 @@ class ShoppingListRecyclerViewFabFragment : Fragment() {
                 if (!shoppingList.isArchived!!) deleteProductDialog(it)
             }
         )
+
         val recyclerView: RecyclerView = binding.recyclerView
         recyclerView.apply {
             this.adapter = adapter
             this.layoutManager = LinearLayoutManager(requireContext())
+            this.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
         }
 
         viewModel.getListsWithProducts().observe(viewLifecycleOwner, {
@@ -135,6 +136,7 @@ class ShoppingListRecyclerViewFabFragment : Fragment() {
     private fun insertNewProductToDatabase(productName: String, productAmount: String) {
         if (productName.isNotEmpty()) {
             val newProduct = Product(  productName, shoppingList.id,productAmount.toInt())
+
             viewModel.addProduct(newProduct, shoppingList)
             Toast.makeText(requireContext(), "Product added successfully.", Toast.LENGTH_LONG).show()
         }

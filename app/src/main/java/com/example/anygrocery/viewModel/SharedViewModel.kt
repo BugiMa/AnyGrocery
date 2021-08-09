@@ -47,10 +47,20 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun addProduct(product: Product, list: ShoppingList) = viewModelScope.launch {
-        repository.insertProduct(product)
-        repository.updateList(list.apply {
-            allCount = allCount!! + 1 })
+
+        val productFound = listsWithProducts.value?.find {it.shoppingList.id == list.id}
+            ?.products?.find {it.name == product.name}
+                ?.apply { amount += product.amount }
+
+        if (productFound == null) {
+            repository.insertProduct(product)
+            repository.updateList(list.apply {
+                allCount = allCount!! + 1 })
+        } else {
+            repository.updateProduct(productFound)
+        }
     }
+
     fun deleteProduct(product: Product, list: ShoppingList) = viewModelScope.launch {
         repository.deleteProduct(product)
         repository.updateList(list.apply {
