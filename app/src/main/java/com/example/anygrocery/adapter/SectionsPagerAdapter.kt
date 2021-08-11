@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.anygrocery.util.Constants
-import com.example.anygrocery.view.recyclerViewFab.ListCollectionRecyclerViewFabFragment
+import com.example.anygrocery.ui.fragment.recyclerViewFab.ListCollectionRecyclerViewFabFragment
 
 class SectionsPagerAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {

@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anygrocery.databinding.ItemListCollectionBinding
-import com.example.anygrocery.model.ShoppingList
+import com.example.anygrocery.data.local.model.ShoppingList
 
 class ListCollectionAdapter(
     private val itemClickCallback: ((ShoppingList) -> Unit)?,
@@ -32,21 +32,21 @@ class ListCollectionAdapter(
             val root = itemBinding.root
             val archiveButton = itemBinding.archiveImageButton
             root.setOnClickListener {
-                itemClickCallback?.invoke(listCollection[adapterPosition])
+                itemClickCallback?.invoke(listCollection[absoluteAdapterPosition])
             }
             root.setOnLongClickListener {
-                itemLongClickCallback?.invoke(listCollection[adapterPosition])
+                itemLongClickCallback?.invoke(listCollection[absoluteAdapterPosition])
                 return@setOnLongClickListener true
             }
             archiveButton.setOnClickListener {
-                archiveButtonClickCallback?.invoke(listCollection[adapterPosition])
+                archiveButtonClickCallback?.invoke(listCollection[absoluteAdapterPosition])
             }
         }
         fun bind(name: String, groceriesDone: String, isArchived: Boolean) {
             if (isArchived)itemBinding.archiveImageButton.visibility = View.GONE
             itemBinding.listName.text = name
             itemBinding.groceriesDone.text = groceriesDone
-            itemBinding.archiveImageButton.visibility = if (listCollection[adapterPosition].isArchived!!) View.GONE else View.VISIBLE
+            itemBinding.archiveImageButton.visibility = if (listCollection[absoluteAdapterPosition].isArchived!!) View.GONE else View.VISIBLE
         }
     }
 

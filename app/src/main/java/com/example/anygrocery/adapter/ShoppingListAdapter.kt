@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anygrocery.databinding.ItemShoppingListBinding
-import com.example.anygrocery.model.Product
+import com.example.anygrocery.data.local.model.Product
 
 class ShoppingListAdapter(
     private val itemClickCallback: ((Product) -> Unit)?,
@@ -33,10 +33,10 @@ class ShoppingListAdapter(
         init {
             val root = itemBinding.root
             root.setOnClickListener {
-                itemClickCallback?.invoke(products[adapterPosition])
+                itemClickCallback?.invoke(products[absoluteAdapterPosition])
             }
             root.setOnLongClickListener {
-                itemLongClickCallback?.invoke(products[adapterPosition])
+                itemLongClickCallback?.invoke(products[absoluteAdapterPosition])
                 return@setOnLongClickListener true
             }
         }
